@@ -41,5 +41,5 @@ if st.button('Enter'):
 	# Update.
 	sheet_url = st.secrets["private_gsheets_url"]
 	sheet = client.open_by_url(sheet_url).sheet1
-	sheet.insert_row(entry_line, row=2)
+	sheet.insert_row(entry_line, index=2)
 	st.success('Data has been written to Google Sheets!')
