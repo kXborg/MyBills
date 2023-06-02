@@ -4,3 +4,5 @@ google-auth
 pandas
 slackclient
 slack_sdk
+yaml
+streamlit-authenticator
