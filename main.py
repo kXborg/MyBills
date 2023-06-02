@@ -13,7 +13,7 @@ def update_page():
 	sheet.insert_row(entry_line, index=2)
 	st.success('Data has been written to Google Sheets!')
 	st.session_state['particular'] = ""
-	st.session_state['amount'] = ""
+	st.session_state['amount'] = 0
 	st.session_state['remark'] = ""
 
 # Get current time.
