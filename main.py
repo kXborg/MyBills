@@ -12,9 +12,9 @@ def update_page():
 	sheet = client.open_by_url(sheet_url).sheet1
 	sheet.insert_row(entry_line, index=2)
 	st.success('Data has been written to Google Sheets!')
-	st.session_state['Particular'] = ""
-	st.session_state['Amount'] = ""
-	st.session_state['Remark'] = ""
+	st.session_state['particular'] = ""
+	st.session_state['amount'] = ""
+	st.session_state['remark'] = ""
 
 # Get current time.
 now_n = datetime.now()
@@ -38,10 +38,10 @@ col01, col02 = st.columns(2)
 sel_date = col01.date_input('Date: ', datetime.now())
 bill_date = sel_date.strftime("%d/%m/%Y")
 
-particular = col02.text_input('Particular', value="")
+particular = col02.text_input('Particular', key='particular', value="")
 
-amount = st.text_input('Amount: ', value="")
-remark = st.text_input('Remark:', value="")
+amount = st.text_input('Amount: ', key='amount', value="")
+remark = st.text_input('Remark:', key='remark', value="")
 mode = st.selectbox('Mode', ('UPI', 'Net Banking', 'Cash'))
 
 
