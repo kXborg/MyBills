@@ -1,0 +1,14 @@
+credentials:
+  usernames:
+    kukil:
+      email: kukilp213@gmail.com
+      name: Kukil Kashyap Borgohain
+      password: $2b$12$P.0roqXhzB/K1wqOOl9uS.N7K0z2WXYdE0MHBI1KaA8dKlR31cTwW
+    bikram:
+      email: bikramjyotidas.nagaon@gmail.com
+      name: Bikram Das
+      password: $2b$12$P.0roqXhzB/K1wqOOl9uS.N7K0z2WXYdE0MHBI1KaA8dKlR31cTwW
+cookie:
+  expiry_days: 30
+  key: "sign_key"
+  name: random_cookie

@@ -1,11 +1,11 @@
-import streamlit as st 
+import yaml
+import streamlit as st
+from yaml.loader import SafeLoader
+import streamlit_authenticator as stauth
 from datetime import datetime
-# import pandas as pd
 import gspread 
 from google.oauth2 import service_account
-# import slack 
 
-# Clear cell.
 def update_page():
 	# Update.
 	sheet_url = st.secrets["private_gsheets_url"]
@@ -16,36 +16,63 @@ def update_page():
 	st.session_state['amount'] = 0
 	st.session_state['remark'] = ""
 
-# Get current time.
-now_n = datetime.now()
-now_strf = now_n.strftime('%Y/%m/%d')
 
-# Connect slack.
-# slack_client = slack.WebClient(token = st.secrets['slack_credentials']['SLACK_TOKEN'])
+def main():
+	# Get current time.
+	now_n = datetime.now()
+	now_strf = now_n.strftime('%Y/%m/%d')
 
-# Create a connetion object.
-credentials = service_account.Credentials.from_service_account_info(
-	st.secrets["gcp_service_account"],
-	scopes=["https://www.googleapis.com/auth/spreadsheets"],)
+	# Connect slack.
+	# slack_client = slack.WebClient(token = st.secrets['slack_credentials']['SLACK_TOKEN'])
 
-# conn = connect(credentials=credentials)
-client = gspread.authorize(credentials)
+	# Create a connetion object.
+	credentials = service_account.Credentials.from_service_account_info(
+		st.secrets["gcp_service_account"],
+		scopes=["https://www.googleapis.com/auth/spreadsheets"],)
 
-st.title("TLCM Bills")
+	# conn = connect(credentials=credentials)
+	client = gspread.authorize(credentials)
 
-col01, col02 = st.columns(2)
+	st.title("TLCM Bills")
 
-sel_date = col01.date_input('Date: ', datetime.now())
-bill_date = sel_date.strftime("%d/%m/%Y")
+	col01, col02 = st.columns(2)
 
-particular = col02.text_input('Particular', key='particular', value="")
+	sel_date = col01.date_input('Date: ', datetime.now())
+	bill_date = sel_date.strftime("%d/%m/%Y")
 
-amount = st.number_input('Amount: ', key='amount', min_value=0)
-remark = st.text_input('Remark:', key='remark', value="")
-mode = st.selectbox('Mode', ('UPI', 'Net Banking', 'Cash'))
+	particular = col02.text_input('Particular', key='particular', value="")
+
+	amount = st.number_input('Amount: ', key='amount', min_value=0)
+	remark = st.text_input('Remark:', key='remark', value="")
+	mode = st.selectbox('Mode', ('UPI', 'Net Banking', 'Cash'))
+
+	# Write to spreadsheet.
+	entry_line = [bill_date, particular, amount, mode, remark]
+
+	st.button('Enter', on_click=update_page)
 
 
-# Write to spreadsheet.
-entry_line = [bill_date, particular, amount, mode, remark]
+if __name__ == '__main__':
+	with open('config.yaml') as file:
+		config = yaml.load(file, Loader=SafeLoader)
 
-st.button('Enter', on_click=update_page)
+
+	authenticator = stauth.Authenticate(
+	    config['credentials'],
+	    config['cookie']['name'],
+	    config['cookie']['key'],
+	    config['cookie']['expiry_days'],
+	)
+
+	name, authentication_status, username = authenticator.login('Login', 'main')
+
+	if authentication_status:
+	    authenticator.logout('Logout', 'main')
+	    main()
+	elif authentication_status == False:
+	    st.error('Username/password is incorrect')
+	elif authentication_status == None:
+	    st.warning('Please enter your username and password')
+
+
+
