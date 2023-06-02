@@ -40,7 +40,7 @@ bill_date = sel_date.strftime("%d/%m/%Y")
 
 particular = col02.text_input('Particular', key='particular', value="")
 
-amount = st.number_input('Amount: ', key='amount')
+amount = st.number_input('Amount: ', key='amount', min_value=0)
 remark = st.text_input('Remark:', key='remark', value="")
 mode = st.selectbox('Mode', ('UPI', 'Net Banking', 'Cash'))
 
