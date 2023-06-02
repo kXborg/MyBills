@@ -6,16 +6,6 @@ from datetime import datetime
 import gspread 
 from google.oauth2 import service_account
 
-def update_page():
-	# Update.
-	sheet_url = st.secrets["private_gsheets_url"]
-	sheet = client.open_by_url(sheet_url).sheet1
-	sheet.insert_row(entry_line, index=2)
-	st.success('Data has been written to Google Sheets!')
-	st.session_state['particular'] = ""
-	st.session_state['amount'] = 0
-	st.session_state['remark'] = ""
-
 
 def main():
 	# Get current time.
@@ -24,14 +14,12 @@ def main():
 
 	# Connect slack.
 	# slack_client = slack.WebClient(token = st.secrets['slack_credentials']['SLACK_TOKEN'])
-
+	# conn = connect(credentials=credentials)
 	# Create a connetion object.
 	credentials = service_account.Credentials.from_service_account_info(
-		st.secrets["gcp_service_account"],
-		scopes=["https://www.googleapis.com/auth/spreadsheets"],)
-
-	# conn = connect(credentials=credentials)
-	client = gspread.authorize(credentials)
+			st.secrets["gcp_service_account"],
+			scopes=["https://www.googleapis.com/auth/spreadsheets"],)
+	client = gspread.authorize(credentials)	
 
 	st.title("TLCM Bills")
 
@@ -49,7 +37,15 @@ def main():
 	# Write to spreadsheet.
 	entry_line = [bill_date, particular, amount, mode, remark]
 
-	st.button('Enter', on_click=update_page)
+	if st.button('Enter'):
+		# Update.
+		sheet_url = st.secrets["private_gsheets_url"]
+		sheet = client.open_by_url(sheet_url).sheet1
+		sheet.insert_row(entry_line, index=2)
+		st.success('Data has been written to Google Sheets!')
+		st.session_state['particular'] = ""
+		st.session_state['amount'] = 0
+		st.session_state['remark'] = ""
 
 
 if __name__ == '__main__':
@@ -67,12 +63,12 @@ if __name__ == '__main__':
 	name, authentication_status, username = authenticator.login('Login', 'main')
 
 	if authentication_status:
-	    authenticator.logout('Logout', 'main')
-	    main()
+		authenticator.logout('Logout', 'main')
+		main()
 	elif authentication_status == False:
-	    st.error('Username/password is incorrect')
+		st.error('Username/password is incorrect')
 	elif authentication_status == None:
-	    st.warning('Please enter your username and password')
+		st.warning('Please enter your username and password')
 
 
 
