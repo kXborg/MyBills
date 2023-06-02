@@ -6,7 +6,12 @@ from google.oauth2 import service_account
 # import slack 
 
 # Clear cell.
-def clear_text():
+def update_page():
+	# Update.
+	sheet_url = st.secrets["private_gsheets_url"]
+	sheet = client.open_by_url(sheet_url).sheet1
+	sheet.insert_row(entry_line, index=2)
+	st.success('Data has been written to Google Sheets!')
 	st.session_state['Particular'] = ""
 	st.session_state['Amount'] = ""
 	st.session_state['Remark'] = ""
@@ -43,10 +48,4 @@ mode = st.selectbox('Mode', ('UPI', 'Net Banking', 'Cash'))
 # Write to spreadsheet.
 entry_line = [bill_date, particular, amount, mode, remark]
 
-if st.button('Enter'):
-	# Update.
-	sheet_url = st.secrets["private_gsheets_url"]
-	sheet = client.open_by_url(sheet_url).sheet1
-	sheet.insert_row(entry_line, index=2)
-	st.success('Data has been written to Google Sheets!')
-	clear_text()
+st.button('Enter', on_click=update_page)
