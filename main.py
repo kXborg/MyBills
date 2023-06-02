@@ -7,15 +7,22 @@ import gspread
 from google.oauth2 import service_account
 
 
+def update_page(client, entry_line):
+	# Update.
+	sheet_url = st.secrets["private_gsheets_url"]
+	sheet = client.open_by_url(sheet_url).sheet1
+	sheet.insert_row(entry_line, index=2)
+	st.success('Data has been written to Google Sheets!')
+	st.session_state['particular'] = ""
+	st.session_state['amount'] = 0
+	st.session_state['remark'] = ""
+
+
 def main():
 	# Get current time.
 	now_n = datetime.now()
 	now_strf = now_n.strftime('%Y/%m/%d')
 
-	# Connect slack.
-	# slack_client = slack.WebClient(token = st.secrets['slack_credentials']['SLACK_TOKEN'])
-	# conn = connect(credentials=credentials)
-	# Create a connetion object.
 	credentials = service_account.Credentials.from_service_account_info(
 			st.secrets["gcp_service_account"],
 			scopes=["https://www.googleapis.com/auth/spreadsheets"],)
@@ -37,15 +44,7 @@ def main():
 	# Write to spreadsheet.
 	entry_line = [bill_date, particular, amount, mode, remark]
 
-	if st.button('Enter'):
-		# Update.
-		sheet_url = st.secrets["private_gsheets_url"]
-		sheet = client.open_by_url(sheet_url).sheet1
-		sheet.insert_row(entry_line, index=2)
-		st.success('Data has been written to Google Sheets!')
-		st.session_state['particular'] = ""
-		st.session_state['amount'] = 0
-		st.session_state['remark'] = ""
+	st.button('Enter', on_click=update_page, args=(client, entry_line))
 
 
 if __name__ == '__main__':
