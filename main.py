@@ -5,6 +5,12 @@ import gspread
 from google.oauth2 import service_account
 # import slack 
 
+# Clear cell.
+def clear_text():
+	st.session_state['Particular'] = ""
+	st.session_state['Amount'] = ""
+	st.session_state['Remark'] = ""
+
 # Get current time.
 now_n = datetime.now()
 now_strf = now_n.strftime('%Y/%m/%d')
@@ -43,3 +49,4 @@ if st.button('Enter'):
 	sheet = client.open_by_url(sheet_url).sheet1
 	sheet.insert_row(entry_line, index=2)
 	st.success('Data has been written to Google Sheets!')
+	clear_text()
