@@ -1,0 +1,6 @@
+urllib3<2.0
+gspread
+google-auth
+pandas
+slackclient
+slack_sdk
